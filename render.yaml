@@ -1,0 +1,5 @@
+services:
+  - type: web
+    name: book-review
+    runtime: static
+    staticPublishPath: ./site

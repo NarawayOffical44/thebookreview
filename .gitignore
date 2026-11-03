@@ -1,0 +1,4 @@
+# The unpublished book stays out of the public repo
+*.pdf
+.DS_Store
+node_modules/

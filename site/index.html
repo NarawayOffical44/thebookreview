@@ -1,0 +1,409 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Help polish the book</title>
+<style>
+:root{
+  --ink:#1d1d1f; --muted:#6e6e73; --line:rgba(0,0,0,.08); --glass:rgba(255,255,255,.66);
+  --blue:#0071e3; --amber:#ff9f0a; --green:#30d158; --r:22px;
+  --ease:cubic-bezier(.22,1,.36,1);
+  font-family:-apple-system,BlinkMacSystemFont,"SF Pro Display","Inter","Segoe UI",system-ui,sans-serif;
+  color:var(--ink); -webkit-font-smoothing:antialiased;
+}
+*{box-sizing:border-box} html{scroll-behavior:smooth} [hidden]{display:none!important}
+body{margin:0;background:#f5f5f7;overflow-x:hidden}
+button,input,textarea{font:inherit;color:inherit}
+
+/* soft animated background */
+.bg{position:fixed;inset:0;z-index:-1;overflow:hidden}
+.bg i{position:absolute;width:46vmax;height:46vmax;border-radius:50%;filter:blur(80px);opacity:.45;animation:drift 22s var(--ease) infinite alternate}
+.bg i:nth-child(1){background:#a5c8ff;top:-15vmax;left:-10vmax}
+.bg i:nth-child(2){background:#ffd6a5;bottom:-20vmax;right:-10vmax;animation-delay:-7s}
+.bg i:nth-child(3){background:#e4c1ff;top:30%;left:45%;width:30vmax;height:30vmax;animation-delay:-14s}
+@keyframes drift{to{transform:translate(8vmax,6vmax) scale(1.15)}}
+
+.wrap{max-width:1080px;margin:0 auto;padding:0 24px}
+nav{display:flex;justify-content:space-between;align-items:center;padding:22px 0;font-weight:600}
+nav .dl{font-size:.85rem;color:var(--muted);background:none;border:0;cursor:pointer}
+nav .dl:hover{color:var(--ink)}
+
+/* hero */
+.hero{display:grid;grid-template-columns:1.1fr .9fr;gap:40px;align-items:center;min-height:78vh}
+h1{font-size:clamp(2.6rem,6vw,4.6rem);line-height:1.02;letter-spacing:-.035em;margin:0 0 18px;font-weight:700}
+h1 .grad{background:linear-gradient(90deg,#8e1b1b,#c0392b 55%,#1d1d1f);-webkit-background-clip:text;background-clip:text;color:transparent}
+.lead{font-size:1.25rem;color:var(--muted);line-height:1.5;max-width:30ch;margin:0 0 30px}
+.pill{display:inline-flex;align-items:center;gap:8px;border:0;border-radius:980px;padding:14px 26px;font-weight:600;cursor:pointer;text-decoration:none;transition:transform .4s var(--ease),box-shadow .4s var(--ease),background .3s}
+.pill:hover{transform:translateY(-2px) scale(1.02)} .pill:active{transform:scale(.97)}
+.pill.dark{background:var(--ink);color:#fff;box-shadow:0 10px 30px rgba(0,0,0,.18)}
+.pill.light{background:rgba(255,255,255,.8);color:var(--ink);box-shadow:0 0 0 1px var(--line)}
+.pill.blue{background:var(--blue);color:#fff;box-shadow:0 10px 30px rgba(0,113,227,.3)}
+.pill:disabled{opacity:.55;pointer-events:none}
+.actions{display:flex;gap:12px;flex-wrap:wrap}
+.stats{display:flex;gap:34px;margin-top:40px}
+.stats b{display:block;font-size:2rem;letter-spacing:-.03em}
+.stats span{color:var(--muted);font-size:.9rem}
+
+/* 3D book */
+.stage{perspective:1400px;display:grid;place-items:center;height:460px}
+.book{--rx:-8deg;--ry:-28deg;position:relative;width:240px;height:360px;transform-style:preserve-3d;
+  transform:rotateX(var(--rx)) rotateY(var(--ry));transition:transform .8s var(--ease);animation:float 6s ease-in-out infinite}
+@keyframes float{50%{translate:0 -14px}}
+.book>div{position:absolute;inset:0;border-radius:4px 12px 12px 4px}
+.front{transform:translateZ(22px);background:#eee url(cover.jpg) center/cover;
+  box-shadow:inset 6px 0 12px rgba(255,255,255,.08)}
+.front::after{content:"";position:absolute;inset:0;border-radius:inherit;background:linear-gradient(115deg,transparent 30%,rgba(255,255,255,.22) 45%,transparent 60%);background-size:250% 100%;animation:shine 5s var(--ease) infinite}
+@keyframes shine{from{background-position:120% 0}to{background-position:-120% 0}}
+.front h3{margin:0;font-size:1.7rem;letter-spacing:-.02em;line-height:1.1}
+.front small{opacity:.7;letter-spacing:.2em;text-transform:uppercase;font-size:.7rem}
+.back{transform:translateZ(-22px) rotateY(180deg);background:#e8e2d6}
+.spine{width:44px!important;left:-22px!important;transform:rotateY(-90deg);background:linear-gradient(90deg,#d9d2c4,#efe9de);border-radius:4px!important}
+.pages{width:44px!important;left:auto!important;right:-22px!important;transform:rotateY(90deg);
+  background:repeating-linear-gradient(90deg,#fdfdfb 0 2px,#e9e6df 2px 3px);border-radius:2px!important}
+.top{height:44px!important;top:-22px!important;transform:rotateX(90deg);background:repeating-linear-gradient(0deg,#fdfdfb 0 2px,#e9e6df 2px 3px)}
+.shadow{position:absolute;width:260px;height:40px;bottom:30px;background:radial-gradient(rgba(0,0,0,.25),transparent 70%);filter:blur(8px);animation:shadow 6s ease-in-out infinite}
+@keyframes shadow{50%{transform:scale(.85);opacity:.6}}
+
+/* cards */
+section.panel{display:grid;grid-template-columns:1fr 1fr;gap:24px;padding:40px 0 80px}
+.card{background:var(--glass);backdrop-filter:saturate(180%) blur(24px);-webkit-backdrop-filter:saturate(180%) blur(24px);
+  border-radius:var(--r);padding:32px;box-shadow:0 0 0 1px var(--line),0 30px 60px -30px rgba(0,0,0,.18)}
+.card h2{margin:0 0 6px;font-size:1.6rem;letter-spacing:-.02em}
+.card p.sub{margin:0 0 24px;color:var(--muted)}
+label{display:block;font-size:.8rem;font-weight:600;color:var(--muted);margin:18px 0 8px;letter-spacing:.02em}
+.chips{display:flex;flex-wrap:wrap;gap:8px}
+.chip{border:0;border-radius:980px;padding:9px 16px;background:rgba(0,0,0,.05);cursor:pointer;transition:all .35s var(--ease)}
+.chip:hover{background:rgba(0,0,0,.09)}
+.chip.on{background:var(--ink);color:#fff;transform:scale(1.04)}
+.field{width:100%;border:0;border-radius:14px;padding:14px 16px;background:rgba(255,255,255,.9);box-shadow:0 0 0 1px var(--line);transition:box-shadow .3s}
+.field:focus{outline:0;box-shadow:0 0 0 4px rgba(0,113,227,.25),0 0 0 1px var(--blue)}
+textarea.field{resize:vertical;min-height:110px}
+select.field{appearance:none;-webkit-appearance:none;cursor:pointer;padding-right:40px;
+  background:rgba(255,255,255,.9) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8'%3E%3Cpath d='M1 1l5 5 5-5' fill='none' stroke='%236e6e73' stroke-width='1.6'/%3E%3C/svg%3E") right 16px center no-repeat}
+.row{display:grid;grid-template-columns:120px 1fr;gap:12px}
+.hint{font-size:.78rem;color:var(--muted);margin-top:10px}
+.submit{margin-top:22px;width:100%;justify-content:center}
+
+/* issue list */
+.list{display:flex;flex-direction:column;gap:12px;max-height:620px;overflow:auto;padding:4px}
+.empty{color:var(--muted);text-align:center;padding:50px 10px}
+.empty .big{font-size:2.6rem;display:block;margin-bottom:10px}
+.issue{background:rgba(255,255,255,.9);border-radius:16px;padding:16px 18px;box-shadow:0 0 0 1px var(--line);animation:rise .6s var(--ease) both}
+.issue.match{box-shadow:0 0 0 2px var(--amber),0 12px 30px -12px rgba(255,159,10,.5)}
+.issue .meta{font-size:.78rem;color:var(--muted);display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+.badge{background:var(--amber);color:#fff;border-radius:980px;padding:2px 9px;font-weight:600}
+.issue .text{margin:8px 0 4px;line-height:1.45}
+.note{font-size:.9rem;margin:8px 0 0;padding-left:12px;border-left:3px solid var(--line);color:#3a3a3c}
+.metoo{margin-top:10px;display:flex;gap:8px}
+.metoo input{flex:1;padding:10px 14px;border-radius:980px}
+.metoo .pill{padding:10px 16px;font-size:.9rem}
+@keyframes rise{from{opacity:0;transform:translateY(14px) scale(.98)}}
+
+/* reveal + toast */
+.anim .reveal{opacity:0;transform:translateY(30px);transition:opacity 1s var(--ease),transform 1s var(--ease)}
+.anim .reveal.in{opacity:1;transform:none}
+.toast{position:fixed;left:50%;bottom:30px;translate:-50% 140px;background:rgba(29,29,31,.92);backdrop-filter:blur(20px);color:#fff;
+  padding:14px 22px;border-radius:980px;font-weight:500;transition:translate .6s var(--ease);z-index:9;display:flex;gap:10px;align-items:center}
+.toast.show{translate:-50% 0}
+.check{width:22px;height:22px;border-radius:50%;background:var(--green);display:grid;place-items:center;font-size:.8rem}
+.demo{background:#fff3cd;color:#7a5a00;text-align:center;font-size:.85rem;padding:8px}
+.burst{position:fixed;pointer-events:none;width:8px;height:8px;border-radius:2px;z-index:10;animation:burst 1s var(--ease) forwards}
+@keyframes burst{to{transform:translate(var(--x),var(--y)) rotate(540deg);opacity:0}}
+footer{text-align:center;color:var(--muted);font-size:.85rem;padding:0 0 40px}
+
+@media (max-width:860px){
+  .hero{grid-template-columns:1fr;text-align:center;min-height:auto;padding:20px 0}
+  .lead{margin-inline:auto} .actions,.stats{justify-content:center}
+  .stage{height:380px;order:-1} section.panel{grid-template-columns:1fr}
+}
+@media (max-width:520px){
+  .wrap{padding:0 16px} nav{padding:16px 0}
+  .lead{font-size:1.08rem} .stats{gap:24px;margin-top:28px}
+  .stage{height:300px} .book{scale:.78} .shadow{bottom:10px}
+  .card{padding:22px 18px;border-radius:18px} section.panel{padding:10px 0 50px}
+  .row{grid-template-columns:1fr 1.6fr}
+  .pill{padding:13px 20px} .actions .pill{flex:1;justify-content:center}
+  .metoo{flex-direction:column} .metoo .pill{justify-content:center}
+  .list{max-height:none}
+  .toast{bottom:calc(16px + env(safe-area-inset-bottom));width:max-content;max-width:calc(100% - 32px)}
+}
+/* 16px inputs stop iPhone from zooming in when tapping a field */
+.field{font-size:16px}
+.chip,.pill{-webkit-tap-highlight-color:transparent;touch-action:manipulation}
+@media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}.reveal{opacity:1;transform:none}}
+</style>
+</head>
+<body>
+<div class="bg"><i></i><i></i><i></i></div>
+<div id="demo" class="demo" hidden>Preview mode: issues are saved only in this browser until JSONBin or the Google Sheet is connected.</div>
+
+<div class="wrap">
+  <nav><span>📖 <span class="js-title">The Book</span></span>
+    <button class="dl" id="download" title="For the author">Download issues ↓</button></nav>
+
+  <header class="hero">
+    <div class="reveal">
+      <h1>Help us make<br><span class="grad js-title">this book</span> perfect.</h1>
+      <p class="lead">Spotted a typo, a mistake or something unclear? Tell us in under 20 seconds. No sign-up needed.</p>
+      <div class="actions">
+        <a class="pill dark" id="booklink" target="_blank" rel="noopener" hidden>Read the book ↗</a>
+        <a class="pill light" href="#report">Report an issue</a>
+      </div>
+      <div class="stats">
+        <div><b id="statIssues">0</b><span>issues found</span></div>
+        <div><b id="statReaders">0</b><span>readers helping</span></div>
+      </div>
+    </div>
+    <div class="stage" id="stage">
+      <div class="book" id="book">
+        <div class="back"></div><div class="spine"></div><div class="pages"></div><div class="top"></div>
+        <div class="front"></div>
+      </div>
+      <div class="shadow"></div>
+    </div>
+  </header>
+
+  <section class="panel" id="report">
+    <div class="card reveal">
+      <h2>Report an issue</h2>
+      <p class="sub">Type the page number printed at the bottom of the page. We'll fill in the chapter for you.</p>
+      <div class="row">
+        <div><label for="page">Page</label><input class="field" id="page" type="number" min="1" inputmode="numeric" placeholder="42"></div>
+        <div><label for="chapters">Chapter</label><select class="field" id="chapters"></select></div>
+      </div>
+      <label for="reader">Your name <span style="font-weight:400">(optional)</span></label><input class="field" id="reader" placeholder="So we can thank you">
+      <label for="text">What's wrong?</label>
+      <textarea class="field" id="text" placeholder="e.g. “recieve” should be “receive”"></textarea>
+      <p class="hint">Tip: ⌘/Ctrl + Enter to send. We'll show you if someone already reported it.</p>
+      <button class="pill blue submit" id="submit">Send issue</button>
+    </div>
+
+    <div class="card reveal">
+      <h2>Already reported</h2>
+      <p class="sub">On this page and the pages either side. Same issue? Just tap <b>Me too</b>.</p>
+      <div class="list" id="list"><div class="empty"><span class="big">👈</span>Choose a chapter and page to see what others found.</div></div>
+    </div>
+  </section>
+  <footer>Made with care for our early readers. Every note makes the book better. ♥</footer>
+</div>
+<div class="toast" id="toast"><span class="check">✓</span><span id="toastText"></span></div>
+
+<script>
+// ===================== SETTINGS =====================
+const BOOK = {
+  title: 'The Deleted Line',
+  link: '',                       // paste the book's Google Drive link (shared: Anyone with the link)
+  // [name, first printed page] from the book's Contents page, in order
+  sections: [
+    ['Prologue', 1], ['Part One: The Cut', 5], ['1. Too Good to Send', 8], ['Perkins, 1929', 22], ['2. First Pass', 23],
+    ['Carver, 1980', 36], ['3. By Hand', 37], ['Virgil, 19 BC', 46], ['4. Five Per Cent', 47],
+    ['5. The Line That Stayed', 55], ['Kafka, 1924', 63], ['Part Two: The Refusal', 64], ['6. Not Photography', 67],
+    ['Miyazaki, 2016', 76], ['7. Literary Material', 77], ['Sky, 2024', 85], ['8. Blood and Guts', 86],
+    ['Part Three: The Kill', 94], ['9. End of the World', 97], ['Gogol, 1852', 106], ['10. General Purpose', 107],
+    ['Amazon, 2018', 115], ['11. An Entity That Cannot Be Defeated', 116], ['12. Somebody Else Would Have', 124],
+    ['Part Four: The Reversal', 133], ['13. The Wrong Unit', 136], ['Clarkesworld, 2023', 145], ['14. Missed the Mark', 146],
+    ['15. After the Meeting', 154], ['Coda: The Rubber Stamp', 163], ['Epilogue', 169], ["Author's Note", 172],
+    ['Acknowledgements', 174], ['About the Author', 175], ['Notes', 176], ['Index', 195],
+  ],
+};
+BOOK.chapters = BOOK.sections.map((x) => x[0]);
+// Option A: hosted JSON on jsonbin.io (see SETUP.md)
+const JSONBIN_ID = '6ae9f006ffd5d16053a2b1f3';
+const JSONBIN_KEY = '';           // only needed if the bin is Private: Access Key with Bins Read + Update (NOT the Master Key)
+// Option B: Google Sheet web-app URL (apps-script/SETUP.md). Leave empty if using JSONBin.
+const API_URL = '';
+// Both empty = preview mode, saved only in this browser.
+// ====================================================
+
+// <similarity>
+function similarity(a, b) {
+  const w = (s) => new Set(String(s).toLowerCase().match(/[a-z0-9']{3,}/g) || []);
+  const A = w(a), B = w(b);
+  if (!A.size || !B.size) return 0;
+  let inter = 0;
+  A.forEach((x) => { if (B.has(x)) inter++; });
+  return inter / (A.size + B.size - inter);
+}
+function findSimilar(issues, chapter, page, text) {
+  return issues.filter((i) => i.chapter === chapter && Math.abs(i.page - page) <= 1)
+    .map((i) => Object.assign({}, i, { score: similarity(text, i.text) }))
+    .sort((a, b) => b.score - a.score || Math.abs(a.page - page) - Math.abs(b.page - page));
+}
+// Which section a printed page belongs to (null if before the first section).
+function chapterForPage(sections, page) {
+  let hit = null;
+  for (const [name, start] of sections) if (page >= start) hit = name;
+  return hit;
+}
+// </similarity>
+
+const $ = (id) => document.getElementById(id);
+const esc = (s) => String(s).replace(/[&<>"']/g, (c) => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+let data = { title: 'The Book', link: '', chapters: [], issues: [] };
+let chapter = localStorage.lastChapter || '';
+
+// <apply>
+// Applies one reader action to the issue list. Shared by JSONBin and preview mode.
+function applyChange(issues, b, chapters) {
+  const now = new Date().toISOString();
+  const reader = String(b.reader || '').trim().slice(0, 80) || 'Anonymous';
+  const text = String(b.text || '').trim().slice(0, 2000);
+  if (b.action === 'addIssue') {
+    const page = Number(b.page);
+    if (chapters.indexOf(b.chapter) === -1) throw new Error('Please choose a chapter');
+    if (!Number.isInteger(page) || page < 1) throw new Error('Please enter a valid page number');
+    if (!text) throw new Error('Please describe the issue');
+    issues.push({ id: crypto.randomUUID(), chapter: b.chapter, page, text, reader, createdAt: now, notes: [] });
+  } else if (b.action === 'addNote') {
+    const issue = issues.find((i) => i.id === b.issueId);
+    if (!issue) throw new Error('Issue not found');
+    issue.notes.push({ text, reader, createdAt: now });
+  } else throw new Error('Unknown action');
+  return issues;
+}
+// </apply>
+
+const withBook = (issues) => Object.assign({}, BOOK, { issues });
+const jsonbin = {
+  url: () => 'https://api.jsonbin.io/v3/b/' + JSONBIN_ID,
+  headers: () => Object.assign({ 'Content-Type': 'application/json' }, JSONBIN_KEY ? { 'X-Access-Key': JSONBIN_KEY } : {}),
+  async load() {
+    const r = await fetch(this.url() + '/latest', { headers: Object.assign(this.headers(), { 'X-Bin-Meta': 'false' }) });
+    if (!r.ok) throw new Error('Could not reach the issue list (' + r.status + ')');
+    const j = await r.json();
+    return Array.isArray(j.issues) ? j.issues : [];
+  },
+  // Re-read just before saving so we add to the newest list, not a stale copy.
+  async post(b) {
+    const issues = applyChange(await this.load(), b, BOOK.chapters);
+    const r = await fetch(this.url(), { method: 'PUT', headers: this.headers(), body: JSON.stringify({ issues }) });
+    if (!r.ok) throw new Error('Could not save (' + r.status + '). Please try again.');
+    return issues;
+  },
+};
+const local = {
+  load() { return JSON.parse(localStorage.demoIssues || '[]'); },
+  post(b) { const issues = applyChange(this.load(), b, BOOK.chapters); localStorage.demoIssues = JSON.stringify(issues); return issues; },
+};
+async function api(body) {
+  if (JSONBIN_ID) return withBook(await (body ? jsonbin.post(body) : jsonbin.load()));
+  if (!API_URL) return withBook(body ? local.post(body) : local.load());
+  // Google Sheet: text/plain body avoids a CORS preflight, which Apps Script does not answer.
+  const r = await fetch(API_URL, body ? { method: 'POST', body: JSON.stringify(body) } : {});
+  const j = await r.json();
+  if (j.error) throw new Error(j.error);
+  return j;
+}
+
+// --- render ---
+function setData(d) {
+  data = d;
+  document.querySelectorAll('.js-title').forEach((el) => { el.textContent = d.title; });
+  document.title = 'Help polish ' + d.title;
+  if (d.link && /^(https:\/\/|[\w.-]+\.pdf$)/.test(d.link)) { $('booklink').href = d.link; $('booklink').hidden = false; }
+  $('chapters').innerHTML = '<option value="">Choose…</option>' + d.chapters.map((c) => `<option>${esc(c)}</option>`).join('');
+  $('chapters').value = chapter;
+  countUp($('statIssues'), d.issues.length);
+  const people = new Set();
+  d.issues.forEach((i) => { people.add(i.reader); i.notes.forEach((n) => people.add(n.reader)); });
+  countUp($('statReaders'), people.size);
+  renderList();
+}
+function renderList() {
+  const page = Number($('page').value);
+  if (!chapter || !page) return;
+  const items = findSimilar(data.issues, chapter, page, $('text').value);
+  $('list').innerHTML = items.length ? items.map((i, n) => `
+    <div class="issue ${i.score >= 0.3 ? 'match' : ''}" style="animation-delay:${n * 60}ms">
+      <div class="meta">${i.score >= 0.3 ? '<span class="badge">Looks like yours</span>' : ''}
+        <span>Page ${i.page}</span>·<span>${esc(i.reader)}</span>${i.notes.length ? `·<span>+${i.notes.length} also found it</span>` : ''}</div>
+      <div class="text">${esc(i.text)}</div>
+      ${i.notes.filter((x) => x.text).map((x) => `<div class="note">${esc(x.text)} <span class="meta">— ${esc(x.reader)}</span></div>`).join('')}
+      <div class="metoo"><input class="field" placeholder="Add your wording (optional)" data-for="${esc(i.id)}">
+        <button class="pill light" data-metoo="${esc(i.id)}">🙋 Me too</button></div>
+    </div>`).join('')
+    : `<div class="empty"><span class="big">✨</span>Nothing reported on page ${page} yet. You're the first!</div>`;
+}
+function countUp(el, to) {
+  const from = Number(el.textContent) || 0, t0 = performance.now();
+  const step = (t) => { const p = Math.max(0, Math.min(1, (t - t0) / 900)); el.textContent = Math.round(from + (to - from) * (1 - Math.pow(1 - p, 3))); if (p < 1) requestAnimationFrame(step); };
+  requestAnimationFrame(step);
+}
+function toast(text, ok = true) {
+  $('toastText').textContent = text;
+  $('toast').querySelector('.check').style.background = ok ? 'var(--green)' : '#ff453a';
+  $('toast').querySelector('.check').textContent = ok ? '✓' : '!';
+  $('toast').classList.add('show');
+  clearTimeout(toast.t); toast.t = setTimeout(() => $('toast').classList.remove('show'), 3200);
+}
+function celebrate(el) {
+  const r = el.getBoundingClientRect(), colors = ['#0071e3', '#a24bff', '#ff6a3d', '#30d158', '#ff9f0a'];
+  for (let i = 0; i < 28; i++) {
+    const p = document.createElement('i'); p.className = 'burst';
+    p.style.cssText = `left:${r.left + r.width / 2}px;top:${r.top}px;background:${colors[i % 5]};--x:${(Math.random() - .5) * 320}px;--y:${-Math.random() * 220 - 40}px`;
+    document.body.appendChild(p); setTimeout(() => p.remove(), 1000);
+  }
+}
+
+// --- events ---
+$('chapters').onchange = () => { chapter = localStorage.lastChapter = $('chapters').value; renderList(); };
+let typing;
+$('text').oninput = () => { clearTimeout(typing); typing = setTimeout(renderList, 250); };
+$('page').oninput = () => {
+  const c = chapterForPage(BOOK.sections, Number($('page').value));
+  if (c) { chapter = localStorage.lastChapter = c; $('chapters').value = c; }
+  clearTimeout(typing); typing = setTimeout(renderList, 250);
+};
+$('page').onchange = () => { localStorage.lastPage = $('page').value; };
+$('reader').value = localStorage.reader || '';
+$('page').value = localStorage.lastPage || '';
+$('reader').onchange = () => { localStorage.reader = $('reader').value.trim(); };
+
+async function send() {
+  const btn = $('submit'); btn.disabled = true; btn.textContent = 'Sending…';
+  try {
+    setData(await api({ action: 'addIssue', chapter, page: $('page').value, text: $('text').value, reader: $('reader').value }));
+    $('text').value = ''; renderList(); celebrate(btn); toast('Thank you! Your issue was added.');
+  } catch (e) { toast(e.message, false); }
+  btn.disabled = false; btn.textContent = 'Send issue';
+}
+$('submit').onclick = send;
+$('text').onkeydown = (e) => { if (e.key === 'Enter' && (e.metaKey || e.ctrlKey)) send(); };
+
+$('list').onclick = async (e) => {
+  const id = e.target.dataset.metoo; if (!id) return;
+  e.target.disabled = true;
+  try {
+    const note = document.querySelector(`input[data-for="${CSS.escape(id)}"]`).value;
+    setData(await api({ action: 'addNote', issueId: id, text: note, reader: $('reader').value }));
+    celebrate(e.target); toast('Thanks! Added to the existing issue.');
+  } catch (err) { toast(err.message, false); e.target.disabled = false; }
+};
+$('download').onclick = async () => {
+  const d = await api();
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(new Blob([JSON.stringify(d.issues, null, 2)], { type: 'application/json' }));
+  a.download = `book-issues-${new Date().toISOString().slice(0, 10)}.json`;
+  a.click();
+};
+
+// 3D book follows the mouse
+const book = $('book');
+$('stage').onpointermove = (e) => {
+  const r = e.currentTarget.getBoundingClientRect();
+  book.style.setProperty('--ry', `${-28 + ((e.clientX - r.left) / r.width - .5) * 50}deg`);
+  book.style.setProperty('--rx', `${-8 - ((e.clientY - r.top) / r.height - .5) * 24}deg`);
+};
+$('stage').onpointerleave = () => { book.style.setProperty('--ry', '-28deg'); book.style.setProperty('--rx', '-8deg'); };
+
+// fade-in on scroll
+const io = new IntersectionObserver((es) => es.forEach((x) => x.isIntersecting && x.target.classList.add('in')), { threshold: .15 });
+document.documentElement.classList.add('anim');
+document.querySelectorAll('.reveal').forEach((el) => io.observe(el));
+
+$('demo').hidden = !!(API_URL || JSONBIN_ID);
+api().then(setData).catch((e) => toast('Could not load issues: ' + e.message, false));
+</script>
+</body>
+</html>
